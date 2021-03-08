@@ -26,8 +26,9 @@ public:
 private:
     void clearLines();
     std::list<std::string> m_lines;
-    std::list<std::string>::iterator m_row;
+    std::list<std::string>::iterator m_currentRow;
     int m_col;
+    int m_row;
 };
 
 #endif // STUDENTTEXTEDITOR_H_

@@ -11,8 +11,10 @@ TextEditor* createTextEditor(Undo* un)
 }
 
 StudentTextEditor::StudentTextEditor(Undo* undo)
- : TextEditor(undo), m_row(m_lines.begin()), m_col(0) {
+ : TextEditor(undo), m_col(0), m_row(0) {
 	// TODO
+     m_lines.push_back("");
+     m_currentRow = m_lines.begin();
 }
 
 StudentTextEditor::~StudentTextEditor()
@@ -36,16 +38,17 @@ bool StudentTextEditor::load(std::string file) {
     if(infile)
     {
         clearLines();
-        m_row = m_lines.begin();
-        m_col = 0;
+        m_currentRow = m_lines.begin();
         std::string nextLine;
         while(getline(infile, nextLine))
         {
             if(nextLine[nextLine.size()-1] == '\r')
                 nextLine = nextLine.substr(0,nextLine.size()-1);
-            m_lines.insert(m_row, nextLine);
+            m_lines.insert(m_currentRow, nextLine);
         }
-        m_row = m_lines.begin();
+        m_currentRow = m_lines.begin();
+        m_row = 0;
+        m_col = 0;
         return true;
     }
     return false;
@@ -72,8 +75,9 @@ void StudentTextEditor::backspace() {
 }
 
 void StudentTextEditor::insert(char ch) {
-	// TODO
-    (*m_row).insert((*m_row).begin()+m_col, ch);
+	// TODO: there is a problem with the line after this
+    (*m_currentRow).insert((*m_currentRow).begin()+m_col, ch);
+    
     m_col++;
 }
 
@@ -82,11 +86,38 @@ void StudentTextEditor::enter() {
 }
 
 void StudentTextEditor::getPos(int& row, int& col) const {
-	row = 0; col = 0; // TODO
+    row = m_row;
+    col = m_col; // TODO
 }
 
 int StudentTextEditor::getLines(int startRow, int numRows, std::vector<std::string>& lines) const {
-	return 0; // TODO
+	// TODO
+    //return -1 if passed invalid startRow
+    if(startRow < 0 || startRow > m_lines.size())
+        return -1;
+    
+    //empty the lines vector
+    lines.clear();
+    
+    //copy the current row iterator, then move it either up or down to the starting row
+    std::list<std::string>::iterator start = m_currentRow;
+    for(int i = 0; i < abs(startRow-m_row); i++)
+    {
+        if(m_row > startRow)
+            start--;
+        else
+            start++;
+    }
+    
+    int count = 0;
+    while(start != m_lines.end() && count < numRows)
+    {
+        lines.push_back((*start));
+        start++;
+        count++;
+    }
+    return count;
+
 }
 
 void StudentTextEditor::undo() {
