@@ -2,6 +2,7 @@
 #define STUDENTTEXTEDITOR_H_
 
 #include "TextEditor.h"
+#include <list>
 
 class Undo;
 
@@ -23,7 +24,9 @@ public:
 	void undo();
 
 private:
-
+    std::list<std::string> m_lines;
+    std::list<std::string>::iterator m_row;
+    int m_col;
 };
 
 #endif // STUDENTTEXTEDITOR_H_
