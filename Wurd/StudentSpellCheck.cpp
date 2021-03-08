@@ -13,6 +13,8 @@ StudentSpellCheck::StudentSpellCheck() : m_root(new Trie('\0'))
 {}
 StudentSpellCheck::~StudentSpellCheck() {
 	// TODO
+    m_root->clearTrie();
+    delete m_root;
 }
 
 bool StudentSpellCheck::load(std::string dictionaryFile) {

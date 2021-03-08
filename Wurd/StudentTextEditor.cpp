@@ -18,6 +18,16 @@ StudentTextEditor::StudentTextEditor(Undo* undo)
 StudentTextEditor::~StudentTextEditor()
 {
 	// TODO
+    clearLines();
+    //gotta clear undo
+}
+
+void StudentTextEditor::clearLines()
+{
+    for(std::list<std::string>::iterator p = m_lines.begin(); p != m_lines.end();)
+    {
+        p = m_lines.erase(p);
+    }
 }
 
 bool StudentTextEditor::load(std::string file) {
@@ -25,10 +35,7 @@ bool StudentTextEditor::load(std::string file) {
     std::ifstream infile(file);
     if(infile)
     {
-        for(std::list<std::string>::iterator p = m_lines.begin(); p != m_lines.end();)
-        {
-            p = m_lines.erase(p);
-        }
+        clearLines();
         m_row = m_lines.begin();
         m_col = 0;
         std::string nextLine;
@@ -66,6 +73,8 @@ void StudentTextEditor::backspace() {
 
 void StudentTextEditor::insert(char ch) {
 	// TODO
+    (*m_row).insert((*m_row).begin()+m_col, ch);
+    m_col++;
 }
 
 void StudentTextEditor::enter() {
