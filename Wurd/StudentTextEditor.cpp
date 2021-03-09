@@ -131,7 +131,7 @@ void StudentTextEditor::move(Dir dir) {
 }
 
 void StudentTextEditor::del() {
-	// TODO
+	// TODO: undo
     if(m_col < m_currentRow->size())
     {
         *m_currentRow = m_currentRow->substr(0, m_col) + m_currentRow->substr(m_col+1, m_currentRow->size());
@@ -147,7 +147,20 @@ void StudentTextEditor::del() {
 }
 
 void StudentTextEditor::backspace() {
-	// TODO
+	// TODO: undo
+    if(m_col > 0)
+    {
+        *m_currentRow = m_currentRow->substr(0, m_col-1) + m_currentRow->substr(m_col, m_currentRow->size());
+        m_col--;
+    }
+    else if(m_row != 0)
+    {
+        m_row--;
+        std::string temp = *m_currentRow;
+        m_currentRow = --m_lines.erase(m_currentRow);
+        m_col = m_currentRow->size();
+        *m_currentRow += temp;
+    }
 }
 
 void StudentTextEditor::insert(char ch) {
