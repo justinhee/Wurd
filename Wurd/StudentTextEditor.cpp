@@ -109,7 +109,7 @@ void StudentTextEditor::move(Dir dir) {
             m_col = 0;
             break;
         case Dir::END:
-            m_row = m_currentRow->size();
+            m_col = m_currentRow->size();
             break;
         default:
             break;
