@@ -94,8 +94,8 @@
             filePath = "Wurd/StudentTextEditor.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
             landmarkName = "there is a problem with the line after this"
             landmarkType = "19">
          </BreakpointContent>
@@ -110,8 +110,8 @@
             filePath = "Wurd/StudentTextEditor.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
+            startingLineNumber = "145"
+            endingLineNumber = "145"
             landmarkName = "StudentTextEditor::getLines(startRow, numRows, lines)"
             landmarkType = "7">
          </BreakpointContent>

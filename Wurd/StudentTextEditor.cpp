@@ -64,6 +64,58 @@ void StudentTextEditor::reset() {
 
 void StudentTextEditor::move(Dir dir) {
 	// TODO
+    switch(dir)
+    {
+        case Dir::UP:
+            if(m_row > 0)
+            {
+                m_row--;
+                m_currentRow--;
+            }
+            break;
+        case Dir::DOWN:
+            //TODO: is size O(1)?
+            if(m_row+1 < m_lines.size())
+            {
+                m_row++;
+                m_currentRow++;
+            }
+            break;
+        case Dir::LEFT:
+            if(m_col > 0)
+            {
+                m_col--;
+            }
+            else if(m_col == 0 && m_row > 0)
+            {
+                m_row--;
+                m_currentRow--;
+                m_col = m_currentRow->size();
+            }
+            break;
+        case Dir::RIGHT:
+            if(m_col < m_currentRow->size())
+            {
+                m_col++;
+            }
+            else if(m_col == m_currentRow->size() && m_row+1 < m_lines.size())
+            {
+                m_col = 0;
+                m_row++;
+                m_currentRow++;
+            }
+            break;
+        case Dir::HOME:
+            m_col = 0;
+            break;
+        case Dir::END:
+            m_row = m_currentRow->size();
+            break;
+        default:
+            break;
+            
+            
+    }
 }
 
 void StudentTextEditor::del() {
