@@ -139,21 +139,27 @@ void StudentTextEditor::insert(char ch) {
 
 void StudentTextEditor::enter() {
 	// TODO: add undo
-    if(m_row + 1 == m_lines.size() && m_col == m_currentRow->size())
+    //splits the current line into two parts
+    std::string next = m_currentRow->substr(m_col, m_currentRow->size()-m_col);
+    std::string curr = m_currentRow->substr(0, m_col);
+    *m_currentRow = curr;
+    
+    //creates a new row at the end
+    if(m_row + 1 == m_lines.size())
     {
+        m_lines.push_back(next);
         m_row++;
         m_col = 0;
-        m_lines.push_back("");
         m_currentRow++;
     }
+    //creates a new row in the middle
     else
     {
-        //TODO: seems very messy!
-        std::string temp = m_currentRow->substr(m_col, m_currentRow->size()-m_col);
-        *m_currentRow = m_currentRow->substr(0, m_col);
         m_currentRow++;
-        m_lines.insert(m_currentRow, temp);
+        m_lines.insert(m_currentRow, next);
         m_currentRow--;
+        m_row++;
+        m_col = 0;
     }
 }
 
