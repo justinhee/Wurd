@@ -24,7 +24,6 @@ public:
 	void undo();
 
 private:
-    void clearLines();
     std::list<std::string> m_lines;
     std::list<std::string>::iterator m_currentRow;
     int m_col;

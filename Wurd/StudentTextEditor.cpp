@@ -20,24 +20,16 @@ StudentTextEditor::StudentTextEditor(Undo* undo)
 StudentTextEditor::~StudentTextEditor()
 {
 	// TODO
-    clearLines();
-    //gotta clear undo
+    reset();
 }
 
-void StudentTextEditor::clearLines()
-{
-    for(std::list<std::string>::iterator p = m_lines.begin(); p != m_lines.end();)
-    {
-        p = m_lines.erase(p);
-    }
-}
 
 bool StudentTextEditor::load(std::string file) {
 	// TODO
     std::ifstream infile(file);
     if(infile)
     {
-        clearLines();
+        reset();
 
         std::string nextLine;
         while(getline(infile, nextLine))
@@ -47,8 +39,7 @@ bool StudentTextEditor::load(std::string file) {
             m_lines.push_back(nextLine);
         }
         m_currentRow = m_lines.begin();
-        m_row = 0;
-        m_col = 0;
+
         return true;
     }
     return false;
@@ -68,7 +59,15 @@ bool StudentTextEditor::save(std::string file) {
 }
 
 void StudentTextEditor::reset() {
-	// TODO
+	// TODO: clear undo stack
+    for(std::list<std::string>::iterator p = m_lines.begin(); p != m_lines.end();)
+    {
+        p = m_lines.erase(p);
+    }
+    m_col = 0;
+    m_row = 0;
+    m_currentRow = m_lines.begin();
+
 }
 
 void StudentTextEditor::move(Dir dir) {
