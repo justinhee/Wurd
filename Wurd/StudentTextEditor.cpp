@@ -124,6 +124,18 @@ void StudentTextEditor::move(Dir dir) {
 
 void StudentTextEditor::del() {
 	// TODO
+    if(m_col < m_currentRow->size())
+    {
+        *m_currentRow = m_currentRow->substr(0, m_col) + m_currentRow->substr(m_col+1, m_currentRow->size());
+    }
+    else if(m_row+1 < m_lines.size())
+    {
+        m_currentRow++;
+        std::string temp = *m_currentRow;
+        m_currentRow = --m_lines.erase(m_currentRow);
+        *m_currentRow += temp;
+    }
+   
 }
 
 void StudentTextEditor::backspace() {
