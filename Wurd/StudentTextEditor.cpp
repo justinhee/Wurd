@@ -71,6 +71,8 @@ void StudentTextEditor::move(Dir dir) {
             {
                 m_row--;
                 m_currentRow--;
+                int n = m_currentRow->size();
+                m_col = m_col > n ? n : m_col;
             }
             break;
         case Dir::DOWN:
@@ -79,6 +81,8 @@ void StudentTextEditor::move(Dir dir) {
             {
                 m_row++;
                 m_currentRow++;
+                int n = m_currentRow->size();
+                m_col = m_col > n ? n : m_col;
             }
             break;
         case Dir::LEFT:
@@ -127,14 +131,30 @@ void StudentTextEditor::backspace() {
 }
 
 void StudentTextEditor::insert(char ch) {
-	// TODO: there is a problem with the line after this
+	// TODO: add undo
     (*m_currentRow).insert((*m_currentRow).begin()+m_col, ch);
     
     m_col++;
 }
 
 void StudentTextEditor::enter() {
-	// TODO
+	// TODO: add undo
+    if(m_row + 1 == m_lines.size() && m_col == m_currentRow->size())
+    {
+        m_row++;
+        m_col = 0;
+        m_lines.push_back("");
+        m_currentRow++;
+    }
+    else
+    {
+        //TODO: seems very messy!
+        std::string temp = m_currentRow->substr(m_col, m_currentRow->size()-m_col);
+        *m_currentRow = m_currentRow->substr(0, m_col);
+        m_currentRow++;
+        m_lines.insert(m_currentRow, temp);
+        m_currentRow--;
+    }
 }
 
 void StudentTextEditor::getPos(int& row, int& col) const {
