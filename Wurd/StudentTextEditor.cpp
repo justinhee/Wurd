@@ -38,13 +38,13 @@ bool StudentTextEditor::load(std::string file) {
     if(infile)
     {
         clearLines();
-        m_currentRow = m_lines.begin();
+
         std::string nextLine;
         while(getline(infile, nextLine))
         {
             if(nextLine[nextLine.size()-1] == '\r')
                 nextLine = nextLine.substr(0,nextLine.size()-1);
-            m_lines.insert(m_currentRow, nextLine);
+            m_lines.push_back(nextLine);
         }
         m_currentRow = m_lines.begin();
         m_row = 0;
@@ -55,7 +55,16 @@ bool StudentTextEditor::load(std::string file) {
 }
 
 bool StudentTextEditor::save(std::string file) {
-	return false;  // TODO
+    std::ofstream outfile(file);
+    if(outfile)
+    {
+        for(std::list<std::string>::iterator p = m_lines.begin(); p != m_lines.end(); p++)
+        {
+            outfile << *p << '\n';
+        }
+        return true;
+    }
+    return false;
 }
 
 void StudentTextEditor::reset() {
