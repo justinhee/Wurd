@@ -26,14 +26,7 @@ bool StudentSpellCheck::load(std::string dictionaryFile) {
         std::string s;
         while(getline(infile, s))
         {
-            //convert s to lowercase
-            size_t len = s.size();
-            for(int i = 0; i < len; i++)
-            {
-                s[i] = toupper(s[i]);
-            }
             insert(s);
-
         }
         return true;
     }
@@ -41,9 +34,38 @@ bool StudentSpellCheck::load(std::string dictionaryFile) {
 }
 
 bool StudentSpellCheck::spellCheck(std::string word, int max_suggestions, std::vector<std::string>& suggestions) {
-	return false; // TODO
+    //TODO: add spelling suggestions
+	if(isValidWord(word))
+        return true;
+    else
+    {
+        suggestions.push_back(word);
+        return false;
+    }
 }
 
 void StudentSpellCheck::spellCheckLine(const std::string& line, std::vector<SpellCheck::Position>& problems) {
 	// TODO
+    problems.clear();
+    for(int i = 0; i < line.size(); i ++)
+    {
+        int start = i;
+        int end = i;
+        if(isalpha(line[i]))
+        {
+            while(i + 1 < line.size() && isalpha(line[i+1]))
+            {
+                end++;
+                i++;
+            }
+            if(!isValidWord(line.substr(start, end+1)))
+            {
+                Position misspelledWord;
+                misspelledWord.start = start;
+                misspelledWord.end = end;
+                problems.push_back(misspelledWord);
+            }
+        }
+    }
+    
 }
