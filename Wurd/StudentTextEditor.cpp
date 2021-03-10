@@ -158,8 +158,9 @@ void StudentTextEditor::backspace() {
     //regular backspace, no joining lines
     if(m_col > 0)
     {
+        char ch = (*m_currentRow)[m_col-1];
         helperBackspace();
-        getUndo()->submit(Undo::Action::DELETE, m_row, m_col);
+        getUndo()->submit(Undo::Action::DELETE, m_row, m_col, ch);
     }
     else if(m_row != 0)
     {

@@ -26,25 +26,10 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
     if(curr.m_action == Action::INSERT)
     {
         //if there's more undo actions, check if they're inserts
-//        if(!m_stack.empty())
-//        {
-//            UndoAction next = m_stack.top();
-//            //get all the consecutive inserts and add to the count of deletes
-//            while(next.m_action == Action::INSERT && next.m_row == curr.m_row && next.m_col == curr.m_col-1)
-//            {
-//                count++;
-//                m_stack.pop();
-//                curr = next;
-//
-//                if(!m_stack.empty())
-//                    next = m_stack.top();
-//            }
-//        }
-        //if there's more undo actions, check if they're inserts
         while(!m_stack.empty())
         {
             UndoAction next = m_stack.top();
-            //if the next action is an insert and next to the current one,
+            //if the next action is an insert and next to the current one, increment the count of characters to delete
             if(next.m_action == Action::INSERT && next.m_row == curr.m_row && next.m_col == curr.m_col-1)
             {
                 count++;
@@ -59,24 +44,29 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
     if(curr.m_action == Action::DELETE)
     {
         text += curr.m_ch;
-        UndoAction next = m_stack.top();
-        //get all the consective deletes/backspaces and add the characters to the text string
-        while(!m_stack.empty() && next.m_action == Action::DELETE && next.m_row == curr.m_row && (next.m_col == curr.m_col && next.m_col == curr.m_col+1))
+        //if there's more undo actions, check if they're deletes
+        while(!m_stack.empty())
         {
-            //this means it was a delete, so add the char to the end
-            if(next.m_col  == curr.m_col)
+            UndoAction next = m_stack.top();
+            //if the next action is an delete and next to or in the same place as the current one, add it's char to text
+            if(next.m_action == Action::DELETE && next.m_row == curr.m_row && (next.m_col == curr.m_col || next.m_col == curr.m_col+1))
             {
-                text += next.m_ch;
+                //this means that it was a delete, so add the char to the beginning
+                if(next.m_col == curr.m_col)
+                {
+                    text = next.m_ch + text;
+                }
+                //this means that it was a backspace, so add the char to the end
+                else
+                {
+                    text += next.m_ch;
+                }
+                
+                m_stack.pop();
+                curr = next;
             }
-            //this means it was a backspace, so add the char to the beginning
             else
-            {
-                text = next.m_ch + text;
-            }
-            m_stack.pop();
-            curr = next;
-            next = m_stack.top();
-
+                break;
         }
         return Action::INSERT;
         
