@@ -21,62 +21,16 @@ private:
     struct Trie
     {
     public:
-        Trie(char c) : m_data(c)
-        {
-            for(int i = 0; i < 27; i++)
-                m_children[i] = nullptr;
-            m_isWord = false;
-        }
-        void clearTrie()
-        {
-            for(int i = 0; i < 27; i++)
-            {
-                if(m_children[i] != nullptr)
-                {
-                    m_children[i]->clearTrie();
-                    delete m_children[i];
-                }
-            }
-        }
+        Trie(char c);
+        void clearTrie();
         char m_data;
         bool m_isWord;
         Trie* m_children[27];
     };
     Trie* m_root;
-    void insert(std::string word)
-    {
-        int n = word.size();
-        Trie* node = m_root;
-        int index;
-        for(int i = 0; i < n; i++)
-        {
-            int index = word[i] == '\'' ? 26 : tolower(word[i]) - 'a';
-            
-            if(node->m_children[index] == nullptr)
-            {
-                node->m_children[index] = new Trie(tolower(word[i]));
-            }
-                node = node->m_children[index];
-        }
-        node->m_isWord = true;
-    }
-    bool isValidWord(std::string word)
-    {
-
-        //check for apostrophe
-        //TODO: add spelling suggestions
-        Trie* node = m_root;
-        for(int i = 0; i < word.size(); i++)
-        {
-            int index = word[i] == '\'' ? 26 : tolower(word[i]) - 'a';
-            if(node->m_children[index] != nullptr)
-                node = node->m_children[index];
-            else
-                return false;
-        }
-        return node->m_isWord;
-
-    }
+    void insert(std::string word);
+    bool isValidWord(std::string word);
+    
     
     
 };

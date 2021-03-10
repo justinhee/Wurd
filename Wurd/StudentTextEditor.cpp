@@ -146,12 +146,20 @@ void StudentTextEditor::del() {
    
 }
 
+//removes the character before the curent location and moves the cursor left
+void StudentTextEditor::helperBackspace()
+{
+    *m_currentRow = m_currentRow->substr(0, m_col-1) + m_currentRow->substr(m_col, m_currentRow->size());
+    m_col--;
+}
+
 void StudentTextEditor::backspace() {
 	// TODO: undo
+    //regular backspace, no joining lines
     if(m_col > 0)
     {
-        *m_currentRow = m_currentRow->substr(0, m_col-1) + m_currentRow->substr(m_col, m_currentRow->size());
-        m_col--;
+        helperBackspace();
+        getUndo()->submit(Undo::Action::DELETE, m_row, m_col);
     }
     else if(m_row != 0)
     {
@@ -163,11 +171,25 @@ void StudentTextEditor::backspace() {
     }
 }
 
+void StudentTextEditor::helperInsert(char ch)
+{
+    if(ch == '\t')
+    {
+        
+        (*m_currentRow).insert((*m_currentRow).begin()+m_col, 4, ' ');
+        m_col+=4;
+    }
+    else
+    {
+        (*m_currentRow).insert((*m_currentRow).begin()+m_col, ch);
+        m_col++;
+    }
+}
+
 void StudentTextEditor::insert(char ch) {
 	// TODO: add undo
-    (*m_currentRow).insert((*m_currentRow).begin()+m_col, ch);
-    
-    m_col++;
+    helperInsert(ch);
+    getUndo()->submit(Undo::Action::INSERT, m_row, m_col);
 }
 
 void StudentTextEditor::enter() {
@@ -231,6 +253,67 @@ int StudentTextEditor::getLines(int startRow, int numRows, std::vector<std::stri
 
 }
 
+void StudentTextEditor::moveTo(int row, int col)
+{
+    while(m_row < row)
+    {
+        m_row++;
+        m_currentRow++;
+    }
+    while(m_row > row)
+    {
+        m_row--;
+        m_currentRow--;
+    }
+    m_col = col;
+}
+
 void StudentTextEditor::undo() {
 	// TODO
+    int row;
+    int col;
+    int count;
+    std::string text;
+    switch (getUndo()->get(row, col, count, text)) {
+        case Undo::Action::INSERT:
+            moveTo(row, col);
+            for(int i = 0; i < text.size(); i++)
+            {
+                helperInsert(text[i]);
+            }
+            break;
+        case Undo::Action::DELETE:
+        {
+            moveTo(row, col);
+            for(int i = 0; i < count; i++)
+            {
+                helperBackspace();
+            }
+        }
+            
+        default:
+            break;
+    }
+    
+    
+    
+    /*● If the undo action is Undo::Action::INSERT then your undo method must position the
+     cursor on the specified row, column and then insert all of the characters in the specified
+     undo string back into the document.
+     ● If the undo action is Undo::Action::DELETE then your undo method must position the
+     cursor on the specified row, column and then delete the specified count of characters.
+     ● If the undo action is Undo::Action::SPLIT then your undo method must position the
+     cursor on the specified row, column and then add a line break.
+     ● If the undo action is Undo::Action::JOIN then your undo method must position the cursor
+     on the specified row, column (the row, column will always be at the end of a line, which
+     you will join with the line below) and then join two lines together (as if the user pressed
+     the delete key at the end of the line).
+     ● If the undo action is Undo::Action::ERROR then your undo method must do nothing, as
+     the undo stack is empty (there are no further changes to undo).
+     In all cases, after completion of the undo operation as described above, the cursor must be set
+     to the specified row, column returned by the undo get command.
+     12
+     For more information about how the undo command works, please see the Undo section.
+     NOTE: There is no undo possible for the changes restored by the undo command (i.e., no redo,
+     no undoing the undo). */
 }

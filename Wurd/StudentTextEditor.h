@@ -28,6 +28,9 @@ private:
     std::list<std::string>::iterator m_currentRow;
     int m_col;
     int m_row;
+    void helperInsert(char ch);
+    void helperBackspace();
+    void moveTo(int row, int col);
 };
 
 #endif // STUDENTTEXTEDITOR_H_
