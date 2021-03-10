@@ -50,7 +50,7 @@ private:
         int index;
         for(int i = 0; i < n; i++)
         {
-            index = tolower(word[i]) - 'a';
+            int index = word[i] == '\'' ? 26 : tolower(word[i]) - 'a';
             
             if(node->m_children[index] == nullptr)
             {
@@ -68,7 +68,7 @@ private:
         Trie* node = m_root;
         for(int i = 0; i < word.size(); i++)
         {
-            int index = tolower(word[i]) - 'a';
+            int index = word[i] == '\'' ? 26 : tolower(word[i]) - 'a';
             if(node->m_children[index] != nullptr)
                 node = node->m_children[index];
             else

@@ -51,9 +51,9 @@ void StudentSpellCheck::spellCheckLine(const std::string& line, std::vector<Spel
     {
         int start = i;
         int end = i;
-        if(isalpha(line[i]))
+        if(isalpha(line[i]) || line[i] == '\'')
         {
-            while(i + 1 < line.size() && isalpha(line[i+1]))
+            while(i + 1 < line.size() && (isalpha(line[i+1]) || line[i+1] == '\''))
             {
                 end++;
                 i++;
