@@ -41,7 +41,7 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
         }
         return Action::DELETE;
     }
-    if(curr.m_action == Action::DELETE)
+    else if(curr.m_action == Action::DELETE)
     {
         //try doing it in submit?
         //try using a char list
@@ -80,26 +80,23 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
         
     }
     
+    else if(curr.m_action == Action::SPLIT)
+    {
+        return Action::JOIN;
+    }
+    else if(curr.m_action == Action::JOIN)
+    {
+        return Action::SPLIT;
+    }
     
-    switch (curr.m_action) {
-        case Undo::INSERT:
-            return Action::DELETE;
-            break;
-        case Undo::DELETE:
-            return Action::INSERT;
-            break;
-        case Undo::SPLIT:
-            return Action::JOIN;
-            break;
-        case Undo::JOIN:
-            return Action::SPLIT;
-            break;
-        default:
-            return Action::ERROR;
-    };
+    
+    return Action::ERROR;
     
 }
 
 void StudentUndo::clear() {
 	// TODO
+    while(!m_stack.empty())
+        m_stack.pop();
+    
 }

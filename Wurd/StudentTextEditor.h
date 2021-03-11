@@ -31,6 +31,8 @@ private:
     void helperInsert(char ch);
     void helperBackspace();
     void moveTo(int row, int col);
+    void helperSplit();
+    void helperJoin();
 };
 
 #endif // STUDENTTEXTEDITOR_H_

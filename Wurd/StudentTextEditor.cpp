@@ -67,6 +67,7 @@ void StudentTextEditor::reset() {
     m_col = 0;
     m_row = 0;
     m_currentRow = m_lines.begin();
+    getUndo()->clear();
 
 }
 
@@ -130,22 +131,38 @@ void StudentTextEditor::move(Dir dir) {
     }
 }
 
+
+void StudentTextEditor::helperJoin()
+{
+    std::string temp = *m_currentRow;
+    m_currentRow = --m_lines.erase(m_currentRow);
+    m_col = m_currentRow->size();
+    *m_currentRow += temp;
+    //submit undo action
+    
+}
+
 void StudentTextEditor::del() {
 	// TODO: undo
+    //this is a deleted character
     if(m_col < m_currentRow->size())
     {
+        //collects the character to submit
         char ch = (*m_currentRow)[m_col];
         
         *m_currentRow = m_currentRow->substr(0, m_col) + m_currentRow->substr(m_col+1, m_currentRow->size());
+        //submit the undo action
         getUndo()->submit(Undo::Action::DELETE, m_row, m_col, ch);
         
     }
+    //this joins lines if it's not the last line
     else if(m_row+1 < m_lines.size())
     {
         m_currentRow++;
-        std::string temp = *m_currentRow;
-        m_currentRow = --m_lines.erase(m_currentRow);
-        *m_currentRow += temp;
+        helperJoin();
+        //submit undo action
+        getUndo()->submit(Undo::Action::JOIN, m_row, m_col);
+        
     }
    
 }
@@ -164,26 +181,31 @@ void StudentTextEditor::backspace() {
     {
         char ch = (*m_currentRow)[m_col-1];
         helperBackspace();
+        //submit undo action
         getUndo()->submit(Undo::Action::DELETE, m_row, m_col, ch);
     }
+    //this joins lines if it's not the first line
     else if(m_row != 0)
     {
         m_row--;
-        std::string temp = *m_currentRow;
-        m_currentRow = --m_lines.erase(m_currentRow);
-        m_col = m_currentRow->size();
-        *m_currentRow += temp;
+        helperJoin();
+        //submit undo action
+        getUndo()->submit(Undo::Action::JOIN, m_row, m_col);
+       
+        
     }
 }
 
 void StudentTextEditor::helperInsert(char ch)
 {
+    //inserts ch into the current spot
     (*m_currentRow).insert((*m_currentRow).begin()+m_col, ch);
     m_col++;
 }
 
 void StudentTextEditor::insert(char ch) {
 	// TODO: add undo
+    //if the char inserted is a tab, insert 4 spaces instead
     if(ch == '\t')
     {
         for(int i = 0; i < 4; i++)
@@ -192,19 +214,21 @@ void StudentTextEditor::insert(char ch) {
             getUndo()->submit(Undo::Action::INSERT, m_row, m_col, ' ');
         }
     }
-    
+    //inserts char at current pos
     helperInsert(ch);
+    //submits undo insert
     getUndo()->submit(Undo::Action::INSERT, m_row, m_col);
 }
 
-void StudentTextEditor::enter() {
-	// TODO: add undo
-    //splits the current line into two parts
+
+void StudentTextEditor::helperSplit()
+{
+    //splits the current line into two strings
     std::string next = m_currentRow->substr(m_col, m_currentRow->size()-m_col);
     std::string curr = m_currentRow->substr(0, m_col);
     *m_currentRow = curr;
     
-    //creates a new row at the end
+    //creates a new row at the last line
     if(m_row + 1 == m_lines.size())
     {
         m_lines.push_back(next);
@@ -212,7 +236,7 @@ void StudentTextEditor::enter() {
         m_col = 0;
         m_currentRow++;
     }
-    //creates a new row in the middle
+    //creates a new row in a middle line
     else
     {
         m_currentRow++;
@@ -221,6 +245,15 @@ void StudentTextEditor::enter() {
         m_row++;
         m_col = 0;
     }
+}
+
+void StudentTextEditor::enter() {
+	// TODO: add undo
+    //submits the position before the split
+    getUndo()->submit(Undo::Action::SPLIT, m_row, m_col);
+    
+    //splits the line into two parts
+    helperSplit();
 }
 
 void StudentTextEditor::getPos(int& row, int& col) const {
@@ -248,6 +281,7 @@ int StudentTextEditor::getLines(int startRow, int numRows, std::vector<std::stri
     }
     
     int count = 0;
+    //push count numRows rows or until it reaches the last row
     while(start != m_lines.end() && count < numRows)
     {
         lines.push_back((*start));
@@ -258,6 +292,7 @@ int StudentTextEditor::getLines(int startRow, int numRows, std::vector<std::stri
 
 }
 
+//moves the m_currentRow iterator and the row/col variables to the given values
 void StudentTextEditor::moveTo(int row, int col)
 {
     while(m_row < row)
@@ -281,48 +316,27 @@ void StudentTextEditor::undo() {
     std::string text;
     switch (getUndo()->get(row, col, count, text)) {
         case Undo::Action::INSERT:
+            //move to the correct row and insert the text string
             moveTo(row, col);
-            for(int i = 0; i < text.size(); i++)
-            {
-                helperInsert(text[i]);
-            }
+            m_currentRow->insert(m_col, text);
             break;
         case Undo::Action::DELETE:
-        {
             moveTo(row, col);
-            for(int i = 0; i < count; i++)
-            {
-                helperBackspace();
-            }
-        }
-            
+            *m_currentRow = m_currentRow->substr(0, m_col-count) + m_currentRow->substr(m_col, m_currentRow->size());
+            m_col -= count;
+            break;
+        case Undo::Action::SPLIT:
+            moveTo(row, col);
+            helperSplit();
+            break;
+        case Undo::Action::JOIN:
+            moveTo(row, col);
+            m_currentRow++;
+            helperJoin();
+            break;
         case Undo::Action::ERROR:
             return;
         default:
             break;
     }
-    
-    moveTo(row, col);
-    
-    
-    
-    /*● If the undo action is Undo::Action::INSERT then your undo method must position the
-     cursor on the specified row, column and then insert all of the characters in the specified
-     undo string back into the document.
-     ● If the undo action is Undo::Action::DELETE then your undo method must position the
-     cursor on the specified row, column and then delete the specified count of characters.
-     ● If the undo action is Undo::Action::SPLIT then your undo method must position the
-     cursor on the specified row, column and then add a line break.
-     ● If the undo action is Undo::Action::JOIN then your undo method must position the cursor
-     on the specified row, column (the row, column will always be at the end of a line, which
-     you will join with the line below) and then join two lines together (as if the user pressed
-     the delete key at the end of the line).
-     ● If the undo action is Undo::Action::ERROR then your undo method must do nothing, as
-     the undo stack is empty (there are no further changes to undo).
-     In all cases, after completion of the undo operation as described above, the cursor must be set
-     to the specified row, column returned by the undo get command.
-     12
-     For more information about how the undo command works, please see the Undo section.
-     NOTE: There is no undo possible for the changes restored by the undo command (i.e., no redo,
-     no undoing the undo). */
 }

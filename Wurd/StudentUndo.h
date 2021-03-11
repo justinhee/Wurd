@@ -12,9 +12,10 @@ public:
 	void clear();
 
 private:
+    //each object on the undo stack will have these variables
     struct UndoAction
     {
-        UndoAction(Action action, int row, int col, char ch)
+        UndoAction(Action action, int row, int col, char ch = 0)
         {
             m_action = action;
             m_row = row;
@@ -25,7 +26,6 @@ private:
         int m_row;
         int m_col;
         char m_ch;
-        bool m_isDelete;
     };
     std::stack<UndoAction> m_stack;
 };
