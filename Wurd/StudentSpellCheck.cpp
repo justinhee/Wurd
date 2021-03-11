@@ -30,7 +30,6 @@ void StudentSpellCheck::insert(std::string word)
 {
     int n = word.size();
     Trie* node = m_root;
-    int index;
     for(int i = 0; i < n; i++)
     {
         int index = word[i] == '\'' ? 26 : tolower(word[i]) - 'a';
@@ -98,7 +97,21 @@ bool StudentSpellCheck::spellCheck(std::string word, int max_suggestions, std::v
         return true;
     else
     {
-        suggestions.push_back(word);
+        suggestions.clear();
+        int count = 0;
+        for(int i = 0; i < word.size() && count < max_suggestions; i++)
+        {
+            std::string potentialWord = word;
+            for(int j = 0; j < 27; j++)
+            {
+                potentialWord[i] = j == 26 ? '\'' : 'a' + j;
+                if(isValidWord(potentialWord))
+                {
+                    suggestions.push_back(potentialWord);
+                    count++;
+                }
+            }
+        }
         return false;
     }
 }

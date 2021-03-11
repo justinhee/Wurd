@@ -34,7 +34,7 @@ bool StudentTextEditor::load(std::string file) {
         std::string nextLine;
         while(getline(infile, nextLine))
         {
-            if(nextLine[nextLine.size()-1] == '\r')
+            if(nextLine != "" && nextLine[nextLine.size()-1] == '\r')
                 nextLine = nextLine.substr(0,nextLine.size()-1);
             m_lines.push_back(nextLine);
         }
