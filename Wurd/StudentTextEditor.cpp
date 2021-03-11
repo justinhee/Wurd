@@ -134,7 +134,11 @@ void StudentTextEditor::del() {
 	// TODO: undo
     if(m_col < m_currentRow->size())
     {
+        char ch = (*m_currentRow)[m_col];
+        
         *m_currentRow = m_currentRow->substr(0, m_col) + m_currentRow->substr(m_col+1, m_currentRow->size());
+        getUndo()->submit(Undo::Action::DELETE, m_row, m_col, ch);
+        
     }
     else if(m_row+1 < m_lines.size())
     {
@@ -174,21 +178,21 @@ void StudentTextEditor::backspace() {
 
 void StudentTextEditor::helperInsert(char ch)
 {
-    if(ch == '\t')
-    {
-        
-        (*m_currentRow).insert((*m_currentRow).begin()+m_col, 4, ' ');
-        m_col+=4;
-    }
-    else
-    {
-        (*m_currentRow).insert((*m_currentRow).begin()+m_col, ch);
-        m_col++;
-    }
+    (*m_currentRow).insert((*m_currentRow).begin()+m_col, ch);
+    m_col++;
 }
 
 void StudentTextEditor::insert(char ch) {
 	// TODO: add undo
+    if(ch == '\t')
+    {
+        for(int i = 0; i < 4; i++)
+        {
+            helperInsert(' ');
+            getUndo()->submit(Undo::Action::INSERT, m_row, m_col, ' ');
+        }
+    }
+    
     helperInsert(ch);
     getUndo()->submit(Undo::Action::INSERT, m_row, m_col);
 }
@@ -292,9 +296,13 @@ void StudentTextEditor::undo() {
             }
         }
             
+        case Undo::Action::ERROR:
+            return;
         default:
             break;
     }
+    
+    moveTo(row, col);
     
     
     

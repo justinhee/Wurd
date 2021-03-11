@@ -25,6 +25,7 @@ private:
         int m_row;
         int m_col;
         char m_ch;
+        bool m_isDelete;
     };
     std::stack<UndoAction> m_stack;
 };

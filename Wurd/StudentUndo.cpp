@@ -43,31 +43,39 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
     }
     if(curr.m_action == Action::DELETE)
     {
-        text += curr.m_ch;
-        //if there's more undo actions, check if they're deletes
+        //try doing it in submit?
+        //try using a char list
+        std::string deletes;
+        std::string backspaces;
         while(!m_stack.empty())
         {
             UndoAction next = m_stack.top();
-            //if the next action is an delete and next to or in the same place as the current one, add it's char to text
+            //use the next action to tell whether the current one is a delete or backspace, if it's the same col it's delete, else it's a backspace
             if(next.m_action == Action::DELETE && next.m_row == curr.m_row && (next.m_col == curr.m_col || next.m_col == curr.m_col+1))
             {
                 //this means that it was a delete, so add the char to the beginning
                 if(next.m_col == curr.m_col)
                 {
-                    text = next.m_ch + text;
+                    deletes = curr.m_ch + deletes;
                 }
                 //this means that it was a backspace, so add the char to the end
                 else
                 {
-                    text += next.m_ch;
+                    backspaces += curr.m_ch;
                 }
                 
                 m_stack.pop();
                 curr = next;
             }
+            //if the action was not a delete/backspace or wasn't consecutive, break
             else
+            {
                 break;
+            }
         }
+        //all the deleted chars go to the right of the cursor, all the backspaced ones go to the left. The most recent char goes in the middle
+        text = backspaces + curr.m_ch + deletes;
+        
         return Action::INSERT;
         
     }
