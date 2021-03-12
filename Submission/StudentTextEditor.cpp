@@ -5,6 +5,8 @@
 #include <iostream>
 #include <fstream>
 
+
+//must be O(1)
 TextEditor* createTextEditor(Undo* un)
 {
 	return new StudentTextEditor(un);
@@ -18,16 +20,16 @@ StudentTextEditor::StudentTextEditor(Undo* undo)
      m_currentRow = m_lines.begin();
 }
 
+// This method must run in O(N) time where N is the number of lines in the file currently being edited.
 StudentTextEditor::~StudentTextEditor()
 {
-	// TODO
     for(std::list<std::string>::iterator p = m_lines.begin(); p != m_lines.end();)
     {
         p = m_lines.erase(p);
     }
 }
 
-
+//. This method must run in O(M+N+U) time where M is the number of characters in the editor currently being edited, N is the number of characters in the new file being loaded, and U is the number of items in the undo stack.
 bool StudentTextEditor::load(std::string file) {
 	// TODO
     std::ifstream infile(file);
@@ -50,7 +52,7 @@ bool StudentTextEditor::load(std::string file) {
     //return false if failed
     return false;
 }
-
+//This method must run in O(M) time where M is the number of characters in the editor currently being edited.
 bool StudentTextEditor::save(std::string file) {
     std::ofstream outfile(file);
     if(outfile)
@@ -65,6 +67,7 @@ bool StudentTextEditor::save(std::string file) {
     return false;
 }
 
+//This operation must run in O(N+U) time, where N is the number of rows being edited and U is the number of items in the undo stack.
 void StudentTextEditor::reset() {
 	// TODO: clear undo stack
     //clears each line of the list
@@ -83,6 +86,7 @@ void StudentTextEditor::reset() {
 
 }
 
+//Each of these operations must run in O(1) time, where the operation’s runtime does not depend on the number of lines being edited or the length of the current line.
 void StudentTextEditor::move(Dir dir) {
 	// TODO
     switch(dir)
@@ -165,6 +169,12 @@ void StudentTextEditor::helperJoin()
     
 }
 
+/*Deletion of a character in the middle of a line must run in O(L) time where L is the length
+ of the line of text containing the current editing position. Deletion at the end of a line
+ resulting a merge must run in O(L1+L2) where L1 is the length of the current line of text
+ at the editing position and L2 is the length of the next line in the editor. This command
+ must not have a runtime that depends on the number of lines being edited!*/
+
 void StudentTextEditor::del() {
 	// TODO: undo
     //this is a deleted character
@@ -198,6 +208,13 @@ void StudentTextEditor::helperBackspace()
     m_col--;
 }
 
+
+/*Backspacing that does not result in a merge must run in O(L) time where L is the length
+ of the line of text containing the current editing position. Backspacing at the front of a
+ line resulting in a merge with the previous line must run in O(L1+L2) where L1 is the
+ length of the line of text containing the current editing position and L2 is the length of the
+ previous line in the editor. This command must not have a runtime that depends on the
+ number of lines being edited!*/
 void StudentTextEditor::backspace() {
 	// TODO: undo
     //regular backspace, no joining lines
@@ -227,6 +244,7 @@ void StudentTextEditor::helperInsert(char ch)
     m_col++;
 }
 
+//Insertion of a character into a line must run in O(L) time where L is the length of the line of text containing the current editing position.
 void StudentTextEditor::insert(char ch) {
 	// TODO: add undo
     //if the char inserted is a tab, insert 4 spaces instead
@@ -271,6 +289,7 @@ void StudentTextEditor::helperSplit()
     }
 }
 
+//Using the enter command anywhere on a line must run in O(L) time where L is the length of the line of text containing the current editing position. This command must not have a runtime that depends on the number of lines being edited!
 void StudentTextEditor::enter() {
     //submits the position before the split
     getUndo()->submit(Undo::Action::SPLIT, m_row, m_col);
@@ -279,11 +298,15 @@ void StudentTextEditor::enter() {
     helperSplit();
 }
 
+//This operation must run in O(1) time, where the operation’s runtime does not depend on the number of lines being edited or the length of the current line.
 void StudentTextEditor::getPos(int& row, int& col) const {
     row = m_row;
     col = m_col;
 }
 
+/*Let oldR be lines.size() at the time this function was entered. This operation must run in
+ O(oldR + abs(current row number - startRow) + numRows*L) time, where L is the average
+ line length. The runtime must not depend on the number of lines being edited.*/
 int StudentTextEditor::getLines(int startRow, int numRows, std::vector<std::string>& lines) const {
 	// TODO
     //return -1 if passed invalid startRow
@@ -331,6 +354,11 @@ void StudentTextEditor::moveTo(int row, int col)
     m_col = col;
 }
 
+/*This method must run in a time proportional to the nature of the undo operation plus the
+ distance from the current cursor position to the position of the operation. For example, if
+ the undo is of a deleted character, then its runtime must be the cost to re-insert the
+ deleted character into the editor. If the undo is of a line break, then the runtime must be
+ the cost to re-merge the line that was broken into two parts, etc. */
 void StudentTextEditor::undo() {
 	// TODO
     int row;

@@ -1,4 +1,5 @@
 #include "StudentUndo.h"
+#include <list>
 
 Undo* createUndo()
 {
@@ -47,25 +48,28 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
     }
     else if(curr.m_action == Action::DELETE)
     {
-        //try doing it in submit?
-        //try using a char list
-        std::string deletes;
-        std::string backspaces;
+        std::list<char> list;
+        std::list<char>::iterator i = list.begin(); //this will be the cursor position
+        
         while(!m_stack.empty())
         {
             UndoAction next = m_stack.top();
             //use the next action to tell whether the current one is a delete or backspace, if it's the same col it's delete, else it's a backspace
             if(next.m_action == Action::DELETE && next.m_row == curr.m_row && (next.m_col == curr.m_col || next.m_col == curr.m_col+1))
             {
-                //this means that it was a delete, so add the char to the beginning
+                
+                //since col is the same, this operation was a delete
+                //all deletes removed characters from the right, so add to the right side
+                //set i = the new node to keep it in the middle of deletes/backspaces
                 if(next.m_col == curr.m_col)
                 {
-                    deletes = curr.m_ch + deletes;
+                    i = list.insert(i, curr.m_ch);
                 }
-                //this means that it was a backspace, so add the char to the end
+                //else this was a backspace
+                //all backspaces removed characters from the left, so add to the left side
                 else
                 {
-                    backspaces += curr.m_ch;
+                    list.insert(i,curr.m_ch);
                 }
                 
                 m_stack.pop();
@@ -77,10 +81,52 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
                 break;
             }
         }
+        //the final char goes in the middle
+        list.insert(i, curr.m_ch);
         //all the deleted chars go to the right of the cursor, all the backspaced ones go to the left. The most recent char goes in the middle
-        text = backspaces + curr.m_ch + deletes;
+        
+        //construct the string
+        for(std::list<char>::iterator p = list.begin(); p != list.end(); p++)
+        {
+            text += *p;
+        }
         
         return Action::INSERT;
+        
+
+//previous attempt:
+//        std::string deletes;
+//        std::string backspaces;
+//        while(!m_stack.empty())
+//        {
+//            UndoAction next = m_stack.top();
+//            //use the next action to tell whether the current one is a delete or backspace, if it's the same col it's delete, else it's a backspace
+//            if(next.m_action == Action::DELETE && next.m_row == curr.m_row && (next.m_col == curr.m_col || next.m_col == curr.m_col+1))
+//            {
+//                //this means that it was a delete, so add the char to the beginning
+//                if(next.m_col == curr.m_col)
+//                {
+//                    deletes = curr.m_ch + deletes;
+//                }
+//                //this means that it was a backspace, so add the char to the end
+//                else
+//                {
+//                    backspaces += curr.m_ch;
+//                }
+//
+//                m_stack.pop();
+//                curr = next;
+//            }
+//            //if the action was not a delete/backspace or wasn't consecutive, break
+//            else
+//            {
+//                break;
+//            }
+//        }
+//        //all the deleted chars go to the right of the cursor, all the backspaced ones go to the left. The most recent char goes in the middle
+//        text = backspaces + curr.m_ch + deletes;
+//
+//        return Action::INSERT;
         
     }
     //don't need to worry about consecutives for join/split
