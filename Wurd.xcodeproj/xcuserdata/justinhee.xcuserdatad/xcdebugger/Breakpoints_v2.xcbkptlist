@@ -14,10 +14,10 @@
             filePath = "Wurd/StudentTextEditor.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "27"
-            endingLineNumber = "27"
-            landmarkName = "StudentTextEditor::load(file)"
-            landmarkType = "7">
+            startingLineNumber = "34"
+            endingLineNumber = "34"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -30,8 +30,8 @@
             filePath = "Wurd/StudentSpellCheck.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
             landmarkName = "StudentSpellCheck::load(dictionaryFile)"
             landmarkType = "7">
          </BreakpointContent>
@@ -94,10 +94,10 @@
             filePath = "Wurd/StudentTextEditor.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "206"
-            endingLineNumber = "206"
-            landmarkName = "StudentTextEditor::insert(ch)"
-            landmarkType = "7">
+            startingLineNumber = "249"
+            endingLineNumber = "249"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -110,8 +110,8 @@
             filePath = "Wurd/StudentTextEditor.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "264"
-            endingLineNumber = "264"
+            startingLineNumber = "311"
+            endingLineNumber = "311"
             landmarkName = "StudentTextEditor::getLines(startRow, numRows, lines)"
             landmarkType = "7">
          </BreakpointContent>
@@ -126,8 +126,8 @@
             filePath = "Wurd/StudentTextEditor.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
             landmarkName = "StudentTextEditor::load(file)"
             landmarkType = "7">
          </BreakpointContent>
@@ -142,8 +142,8 @@
             filePath = "Wurd/StudentTextEditor.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
             landmarkName = "StudentTextEditor::move(dir)"
             landmarkType = "7">
          </BreakpointContent>
@@ -158,8 +158,8 @@
             filePath = "Wurd/StudentTextEditor.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "41"
-            endingLineNumber = "41"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
             landmarkName = "StudentTextEditor::load(file)"
             landmarkType = "7">
          </BreakpointContent>
@@ -174,8 +174,8 @@
             filePath = "Wurd/StudentSpellCheck.h"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "32"
-            endingLineNumber = "32"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
             landmarkName = "StudentSpellCheck"
             landmarkType = "3">
          </BreakpointContent>
@@ -206,8 +206,8 @@
             filePath = "Wurd/StudentSpellCheck.h"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
             landmarkName = "StudentSpellCheck"
             landmarkType = "3">
          </BreakpointContent>
@@ -238,8 +238,8 @@
             filePath = "Wurd/StudentTextEditor.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "311"
-            endingLineNumber = "311"
+            startingLineNumber = "363"
+            endingLineNumber = "363"
             landmarkName = "StudentTextEditor::undo()"
             landmarkType = "7">
          </BreakpointContent>
@@ -254,8 +254,8 @@
             filePath = "Wurd/StudentSpellCheck.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
             landmarkName = "StudentSpellCheck::spellCheck(word, max_suggestions, suggestions)"
             landmarkType = "7">
          </BreakpointContent>
