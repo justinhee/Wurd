@@ -23,7 +23,6 @@ StudentTextEditor::StudentTextEditor(Undo* undo)
 // This method must run in O(N) time where N is the number of lines in the file currently being edited.
 StudentTextEditor::~StudentTextEditor()
 {
-	// TODO
     for(std::list<std::string>::iterator p = m_lines.begin(); p != m_lines.end();)
     {
         p = m_lines.erase(p);

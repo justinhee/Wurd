@@ -110,6 +110,10 @@ bool StudentSpellCheck::spellCheck(std::string word, int max_suggestions, std::v
     //if it's a fake word search for suggestions
     else
     {
+        //make the word lowercase
+        for(int i = 0; i < word.size(); i++)
+            word[i] = tolower(word[i]);
+        
         suggestions.clear();
         int count = 0;
         //go through each index and allow that index to be any letter, and check if it's a word
